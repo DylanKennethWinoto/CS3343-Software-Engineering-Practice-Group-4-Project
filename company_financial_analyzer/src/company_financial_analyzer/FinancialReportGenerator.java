@@ -1,3 +1,4 @@
+package company_financial_analyzer;
 import java.util.*;
 
 public class FinancialReportGenerator {
