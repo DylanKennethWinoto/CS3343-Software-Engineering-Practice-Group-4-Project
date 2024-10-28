@@ -19,11 +19,8 @@ public class FinancialReportGenerator {
             String quarter = parts[0];
             String year = parts[1];
             int startMonth = (Integer.parseInt(quarter.substring(1)) - 1) * 3 + 1;
-            System.out.println("Quarter: " + quarter + ", Year: " + year); // 调试输出
-            System.out.println("Start Month: " + startMonth); // 调试输出
             for (int month = startMonth; month < startMonth + 3; month++) {
                 targetDates.add(String.format("%s/%d", monthToText(month), Integer.parseInt(year)));
-                System.out.println("Adding target date: " + String.format("%s/%d", monthToText(month), Integer.parseInt(year))); // 调试输出
             }
         } else if (timePeriod.matches("\\w{3}/\\d{4}")) { // MMM/yyyy
             targetDates.add(timePeriod);
@@ -87,25 +84,25 @@ public class FinancialReportGenerator {
     public void addEntry(String line) {
         String[] parts = line.split("\\|");
         if (parts.length != 4) {
-            System.out.println("Invalid line format: " + line); // 调试输出
+            System.out.println("Invalid line format: " + line);
             return;
         }
 
         String date = parts[0];
         String name = parts[1];
         String category = parts[2];
-        long amount = Long.parseLong(parts[3]);
+        long amount = Long.parseLong(parts[3].trim()); // 去除空格
 
         // 只处理指定时间段的数据
         boolean dateMatches = targetDates.stream().anyMatch(targetDate -> date.contains(targetDate));
         if (!dateMatches) {
-            System.out.println("Skipping line (date mismatch): " + line); // 调试输出
+            System.out.println("Skipping line (date mismatch): " + line);
             return;
         }
 
-        System.out.println("Processing line: " + line); // 调试输出
+        System.out.println("Processing line: " + line);
 
-        if (category.equals("Revenue*")) {
+        if (name.startsWith("Product")) {
             totalRevenue += amount;
             products.computeIfAbsent(name, k -> new Product(name)).addRevenue(amount);
         } else {
