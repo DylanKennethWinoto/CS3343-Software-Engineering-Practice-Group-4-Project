@@ -45,6 +45,7 @@ public class FinancialReportGenerator {
         } else {
             throw new IllegalArgumentException("Invalid time period format.");
         }
+        System.out.println("set targetDate：Target Dates: " + targetDates); // 调试输出
     }
 
     private String monthToText(int month) {
@@ -94,6 +95,7 @@ public class FinancialReportGenerator {
         long amount = Long.parseLong(parts[3].trim()); // 去除空格
 
         // 只处理指定时间段的数据
+        System.out.println("addEntry：Target Dates: " + targetDates);
         boolean dateMatches = targetDates.stream().anyMatch(targetDate -> date.contains(targetDate));
         if (!dateMatches) {
             System.out.println("Skipping line (date mismatch): " + line);
@@ -111,32 +113,43 @@ public class FinancialReportGenerator {
         }
     }
 
-    public void generateReport(String timePeriod) {
-        System.out.println(timePeriod + " Financial Report\n");
+    public String generateReport(String timePeriod) {
+        StringBuilder reportBuilder = new StringBuilder();
+        
+        // 构建报告内容
+        reportBuilder.append(timePeriod).append(" Financial Report\n\n");
 
         for (Department dept : departments.values()) {
-            System.out.printf("%s Total Expense = %d (%.1f%%)\n", dept.getName(), dept.getTotalExpense(),
-                    (dept.getTotalExpense() * 100.0) / totalExpenses);
-            System.out.printf("%s Top 3 Categories:\n", dept.getName());
+            reportBuilder.append(String.format("%s Total Expense = %d (%.1f%%)\n", 
+                dept.getName(), dept.getTotalExpense(),
+                (dept.getTotalExpense() * 100.0) / totalExpenses));
+            reportBuilder.append(String.format("%s Top 3 Categories:\n", dept.getName()));
             List<Category> topCategories = dept.getTopCategories();
 
             for (int i = 0; i < 3; i++) {
                 if (i < topCategories.size()) {
-                    System.out.printf("%d. %s - %d\n", i + 1, topCategories.get(i).getName(),
-                            topCategories.get(i).getAmount());
+                    reportBuilder.append(String.format("%d. %s - %d\n", i + 1, 
+                        topCategories.get(i).getName(), topCategories.get(i).getAmount()));
                 } else {
-                    System.out.printf("%d. N/A\n", i + 1);
+                    reportBuilder.append(String.format("%d. N/A\n", i + 1));
                 }
             }
-            System.out.println();
+            reportBuilder.append("\n");
         }
 
         for (Product prod : products.values()) {
-            System.out.printf("%s Total Revenue = %d\n", prod.getName(), prod.getTotalRevenue());
+            reportBuilder.append(String.format("%s Total Revenue = %d\n", prod.getName(), 
+                prod.getTotalRevenue()));
         }
 
         long totalProfit = totalRevenue - totalExpenses;
-        System.out.printf("Total profit = %d\n", totalProfit);
+        reportBuilder.append(String.format("Total profit = %d\n", totalProfit));
+
+        // 打印报告
+        System.out.println(reportBuilder.toString());
+
+        // 返回报告字符串
+        return reportBuilder.toString();
     }
 
     private static class Department {
