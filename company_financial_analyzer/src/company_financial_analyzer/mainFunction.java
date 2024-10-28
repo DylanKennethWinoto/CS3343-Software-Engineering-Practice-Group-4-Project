@@ -13,6 +13,14 @@ public class mainFunction {
         FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            System.out.println("Input successful, please select your time period:");
+            System.out.println("MM/YYYY (e.g., Jan/2024)");
+            System.out.println("Q1/YYYY (e.g., Q1/2024)");
+            System.out.println("YYYY (e.g., 2024)");
+            System.out.println("MM/YYYY-MM/YYYY (e.g., Jan/2024-Mar/2024)");
+            String timePeriod = scanner.nextLine();
+            reportGenerator.setTargetDates(timePeriod);
+
             String line;
             boolean dataFound = false;
 
@@ -22,8 +30,6 @@ public class mainFunction {
             }
 
             if (dataFound) {
-                System.out.println("Input successful, please select your time period (e.g., May/2024):");
-                String timePeriod = scanner.nextLine();
                 reportGenerator.generateReport(timePeriod);
             } else {
                 System.out.println("No data found in the file.");
