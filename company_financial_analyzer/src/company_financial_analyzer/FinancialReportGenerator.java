@@ -7,7 +7,11 @@ public class FinancialReportGenerator {
     private long totalRevenue = 0;
     private long totalExpenses = 0;
     private List<String> targetDates = new ArrayList<>();
+    
+    private String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
+    
+    //////////////////////////////////////
     public void setTargetDates(String timePeriod) {
         targetDates.clear();
         if (timePeriod.matches("\\d{4}")) { // YYYY
@@ -28,8 +32,10 @@ public class FinancialReportGenerator {
             String[] parts = timePeriod.split("-");
             String start = parts[0];
             String end = parts[1];
+            
             String[] startParts = start.split("/");
             String[] endParts = end.split("/");
+            
             int startMonth = textToMonth(startParts[0]);
             int endMonth = textToMonth(endParts[0]);
             int startYear = Integer.parseInt(startParts[1]);
@@ -47,41 +53,24 @@ public class FinancialReportGenerator {
         }
         System.out.println("set targetDate：Target Dates: " + targetDates); // 调试输出
     }
-
-    private String monthToText(int month) {
-        Map<Integer, String> monthMap = new HashMap<>();
-        monthMap.put(1, "Jan");
-        monthMap.put(2, "Feb");
-        monthMap.put(3, "Mar");
-        monthMap.put(4, "Apr");
-        monthMap.put(5, "May");
-        monthMap.put(6, "Jun");
-        monthMap.put(7, "Jul");
-        monthMap.put(8, "Aug");
-        monthMap.put(9, "Sep");
-        monthMap.put(10, "Oct");
-        monthMap.put(11, "Nov");
-        monthMap.put(12, "Dec");
-        return monthMap.get(month);
+    
+    
+// ACK
+   private String monthToText(int month) {
+        return (month >= 1 && month <= 12) ? months[month - 1] : null;
     }
+// ACK
+   private int textToMonth(String month) {
+	    for (int i = 0; i < months.length; i++) {
+	        if (months[i].equals(month)) {
+	            return i + 1;
+	        }
+	    }
+	    return -1; // Invalid input
+	}
 
-    private int textToMonth(String month) {
-        Map<String, Integer> monthMap = new HashMap<>();
-        monthMap.put("Jan", 1);
-        monthMap.put("Feb", 2);
-        monthMap.put("Mar", 3);
-        monthMap.put("Apr", 4);
-        monthMap.put("May", 5);
-        monthMap.put("Jun", 6);
-        monthMap.put("Jul", 7);
-        monthMap.put("Aug", 8);
-        monthMap.put("Sep", 9);
-        monthMap.put("Oct", 10);
-        monthMap.put("Nov", 11);
-        monthMap.put("Dec", 12);
-        return monthMap.get(month);
-    }
-
+   
+   
     public void addEntry(String line) {
         String[] parts = line.split("\\|");
         if (parts.length != 4) {
@@ -112,6 +101,7 @@ public class FinancialReportGenerator {
             departments.computeIfAbsent(name, k -> new Department(name)).addExpense(category, amount);
         }
     }
+    
 
     public String generateReport(String timePeriod) {
         StringBuilder reportBuilder = new StringBuilder();
@@ -151,75 +141,92 @@ public class FinancialReportGenerator {
         // 返回报告字符串
         return reportBuilder.toString();
     }
+    
+    
+//    public void handleReportGen() {
+//    	
+//        Scanner scanner = new Scanner(System.in);
+//        String userInput;
+//
+//        do {
+//            System.out.println("Would you like to generate another financial report (Y/N)?");
+//            userInput = scanner.nextLine().trim();
+//            if (userInput.equals("Y")) {
+//                // ...
+//            }
+//        } while (!userInput.equals("N"));
+//
+//        scanner.close();
+//    }
+///////////////////////////////
+//    private static class Department {
+//        private String name;
+//        private long totalExpense = 0;
+//        private Map<String, Long> categoryExpenses = new HashMap<>();
+//
+//        public Department(String name) {
+//            this.name = name;
+//        }
+//
+//        public void addExpense(String category, long amount) {
+//            totalExpense += amount;
+//            categoryExpenses.put(category, categoryExpenses.getOrDefault(category, 0L) + amount);
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public long getTotalExpense() {
+//            return totalExpense;
+//        }
+//
+//        public List<Category> getTopCategories() {
+//            List<Category> categories = new ArrayList<>();
+//            for (Map.Entry<String, Long> entry : categoryExpenses.entrySet()) {
+//                categories.add(new Category(entry.getKey(), entry.getValue()));
+//            }
+//            categories.sort((a, b) -> Long.compare(b.getAmount(), a.getAmount())); // Sort descending
+//            return categories;
+//        }
+//    }
 
-    private static class Department {
-        private String name;
-        private long totalExpense = 0;
-        private Map<String, Long> categoryExpenses = new HashMap<>();
+//    private static class Product {
+//        private String name;
+//        private long totalRevenue = 0;
+//
+//        public Product(String name) {
+//            this.name = name;
+//        }
+//
+//        public void addRevenue(long amount) {
+//            totalRevenue += amount;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public long getTotalRevenue() {
+//            return totalRevenue;
+//        }
+//    }
 
-        public Department(String name) {
-            this.name = name;
-        }
-
-        public void addExpense(String category, long amount) {
-            totalExpense += amount;
-            categoryExpenses.put(category, categoryExpenses.getOrDefault(category, 0L) + amount);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public long getTotalExpense() {
-            return totalExpense;
-        }
-
-        public List<Category> getTopCategories() {
-            List<Category> categories = new ArrayList<>();
-            for (Map.Entry<String, Long> entry : categoryExpenses.entrySet()) {
-                categories.add(new Category(entry.getKey(), entry.getValue()));
-            }
-            categories.sort((a, b) -> Long.compare(b.getAmount(), a.getAmount())); // Sort descending
-            return categories;
-        }
-    }
-
-    private static class Product {
-        private String name;
-        private long totalRevenue = 0;
-
-        public Product(String name) {
-            this.name = name;
-        }
-
-        public void addRevenue(long amount) {
-            totalRevenue += amount;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public long getTotalRevenue() {
-            return totalRevenue;
-        }
-    }
-
-    private static class Category {
-        private String name;
-        private long amount;
-
-        public Category(String name, long amount) {
-            this.name = name;
-            this.amount = amount;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public long getAmount() {
-            return amount;
-        }
-    }
+//    private static class Category {
+//        private String name;
+//        private long amount;
+//
+//        public Category(String name, long amount) {
+//            this.name = name;
+//            this.amount = amount;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public long getAmount() {
+//            return amount;
+//        }
+//    }
 }
