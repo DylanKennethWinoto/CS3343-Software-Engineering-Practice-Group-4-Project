@@ -1,5 +1,6 @@
 package company_financial_analyzer;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FinancialReportGenerator {
     private Map<String, Department> departments = new HashMap<>();
@@ -105,21 +106,41 @@ public class FinancialReportGenerator {
 
     public String generateReport(String timePeriod) {
         StringBuilder reportBuilder = new StringBuilder();
-        
-        // 构建报告内容
+
+        // Calculate profit
+        long totalProfit = totalRevenue - totalExpenses;
+
+        // Calculate the percentage for each department
+        Map<String, Double> departmentPercentages = new HashMap<>();
+        for (Department dept : departments.values()) {
+            double percentage = (dept.getTotalExpense() * 100.0) / totalExpenses;
+            departmentPercentages.put(dept.getName(), percentage);
+        }
+
+        // Sort departments by percentage
+        List<Map.Entry<String, Double>> sortedDepartments = departmentPercentages.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+
+        // Construct the report
         reportBuilder.append(timePeriod).append(" Financial Report\n\n");
 
-        for (Department dept : departments.values()) {
-            reportBuilder.append(String.format("%s Total Expense = %d (%.1f%%)\n", 
-                dept.getName(), dept.getTotalExpense(),
-                (dept.getTotalExpense() * 100.0) / totalExpenses));
+        for (Map.Entry<String, Double> entry : sortedDepartments) {
+            String deptName = entry.getKey();
+            double percentage = entry.getValue();
+
+            Department dept = departments.get(deptName);
+
+            reportBuilder.append(String.format("%s Total Expense = %d (%.1f%%)\n",
+                    dept.getName(), dept.getTotalExpense(), percentage));
             reportBuilder.append(String.format("%s Top 3 Categories:\n", dept.getName()));
             List<Category> topCategories = dept.getTopCategories();
 
             for (int i = 0; i < 3; i++) {
                 if (i < topCategories.size()) {
-                    reportBuilder.append(String.format("%d. %s - %d\n", i + 1, 
-                        topCategories.get(i).getName(), topCategories.get(i).getAmount()));
+                    reportBuilder.append(String.format("%d. %s - %d\n", i + 1,
+                            topCategories.get(i).getName(), topCategories.get(i).getAmount()));
                 } else {
                     reportBuilder.append(String.format("%d. N/A\n", i + 1));
                 }
@@ -128,17 +149,14 @@ public class FinancialReportGenerator {
         }
 
         for (Product prod : products.values()) {
-            reportBuilder.append(String.format("%s Total Revenue = %d\n", prod.getName(), 
-                prod.getTotalRevenue()));
+            reportBuilder.append(String.format("%s Total Revenue = %d\n", prod.getName(),
+                    prod.getTotalRevenue()));
         }
 
-        long totalProfit = totalRevenue - totalExpenses;
         reportBuilder.append(String.format("Total profit = %d\n", totalProfit));
 
-        // 打印报告
+        // Print and return the report
         System.out.println(reportBuilder.toString());
-
-        // 返回报告字符串
         return reportBuilder.toString();
     }
     
