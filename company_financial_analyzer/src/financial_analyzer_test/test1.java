@@ -34,9 +34,9 @@ public class test1 {
         		+ "\n"
         		+ "Marketing Department Total Expense = 3100000 (60.8%)\n"
         		+ "Marketing Department Top 3 Categories:\n"
-        		+ "1. Online Advertisement - 1000000\n"
+        		+ "1. Online Advertisement - 3000000\n"
         		+ "2. Salary - 100000\n"
-        		+ "3. Online Advertisement (27/May) - 2000000\n"
+        		+ "3. N/A\n"
         		+ "\n"
         		+ "Accounting Total Expense = 1000000 (19.6%)\n"
         		+ "Accounting Top 3 Categories:\n"
@@ -51,7 +51,8 @@ public class test1 {
         		+ "3. N/A\n"
         		+ "\n"
         		+ "Product X Total Revenue = 10000000\n"
-        		+ "Total profit = 4900000";
+        		+ "Total profit = 4900000\n"
+        		;
 
         // 验证生成的报告是否与预期相同
         assertEquals(expectedReport, report);
