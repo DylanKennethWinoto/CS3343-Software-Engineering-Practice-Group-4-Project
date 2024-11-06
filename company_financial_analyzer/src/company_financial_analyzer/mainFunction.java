@@ -3,6 +3,8 @@ package company_financial_analyzer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class mainFunction {
@@ -26,18 +28,18 @@ public class mainFunction {
                 reportGenerator.setTargetDates(timePeriod);
 
                 String line;
-                boolean dataFound = false;
+                List<Long> expenses = new ArrayList<>();
 
                 while ((line = br.readLine()) != null) {
-                    dataFound = true;
                     reportGenerator.addEntry(line);
+                    String[] parts = line.split("\\|");
+                    if (!parts[1].startsWith("Product")) {
+                        expenses.add(Long.parseLong(parts[3].trim()));
+                    }
                 }
 
-                if (dataFound) {
-                    reportGenerator.generateReport(timePeriod);
-                } else {
-                    System.out.println("No data found in the file.");
-                }
+                reportGenerator.generateReport(timePeriod);
+                reportGenerator.weightedAveragePredict(expenses);
 
             } catch (IOException e) {
                 System.out.println("An error occurred while reading the file.");
@@ -47,7 +49,7 @@ public class mainFunction {
             System.out.println("Would you like to generate another financial report (Y/N)?");
             userInput = scanner.nextLine().trim();
 
-        } while (userInput.equals("Y"));
+        } while (userInput.equalsIgnoreCase("Y"));
 
         System.out.println("Thank you for using Company's Financial Analyzer, Goodbye.");
         scanner.close();
