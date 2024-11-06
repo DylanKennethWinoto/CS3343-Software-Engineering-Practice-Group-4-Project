@@ -1,0 +1,18 @@
+01/Jan/2024|Marketing Department|Online Advertisement|1200000
+15/Jan/2024|Accounting|Office Supplies|300000
+20/Feb/2024|Technology Department|Server Upgrade|500000
+05/Mar/2024|Marketing Department|Salary|150000
+12/Apr/2024|Product A|Revenue|25000000
+01/May/2024|Marketing Department|Online Advertisement|2000000
+25/May/2024|Technology Department|Website Maintenance|700000
+01/Jun/2024|Accounting|Consulting Fees|400000
+15/Jun/2024|Marketing Department|Salary|250000
+10/Jul/2024|Product B|Revenue|30000000
+05/Aug/2024|Technology Department|Cloud Services|800000
+15/Sep/2024|Marketing Department|Online Advertisement|500000
+20/Sep/2024|Accounting|Audit Fees|600000
+01/Oct/2024|Technology Department|Hardware Purchase|900000
+14/Oct/2024|Product C|Revenue|15000000
+05/Nov/2024|Marketing Department|Salary|400000
+18/Dec/2024|Accounting|Year-End Bonuses|2000000
+25/Dec/2024|Product D|Revenue|50000000
