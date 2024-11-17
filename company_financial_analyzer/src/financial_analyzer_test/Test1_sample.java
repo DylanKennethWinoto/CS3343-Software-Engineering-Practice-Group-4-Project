@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class test1 {
+public class Test1_sample {
 
     @Test
     public void testGenerateReportFromFile() throws IOException {
