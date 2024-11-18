@@ -25,21 +25,39 @@ public class mainFunction {
                 System.out.println("YYYY (e.g., 2024)");
                 System.out.println("MM/YYYY-MM/YYYY (e.g., Jan/2024-Mar/2024)");
                 String timePeriod = scanner.nextLine();
+
                 reportGenerator.setTargetDates(timePeriod);
 
                 String line;
                 List<Long> expenses = new ArrayList<>();
 
+                // 读取文件并添加条目
                 while ((line = br.readLine()) != null) {
-                    reportGenerator.addEntry(line);
                     String[] parts = line.split("\\|");
-                    if (!parts[1].startsWith("Product")) {
-                        expenses.add(Long.parseLong(parts[3].trim()));
+                    System.out.println("Read line: " + line); // 调试输出
+
+                    // 检查条目格式
+                    if (parts.length != 4) {
+                        System.err.println("Invalid line format: " + line);
+                        continue;
+                    }
+
+                    String date = parts[0];
+                    // 仅在日期匹配目标年份时添加支出
+                    if (reportGenerator.isDateInTarget(date)) {
+                        reportGenerator.addEntry(line);
+                        if (!parts[1].startsWith("Product")) {
+                            expenses.add(Long.parseLong(parts[3].trim()));
+                        }
                     }
                 }
 
                 reportGenerator.generateReport(timePeriod);
-                reportGenerator.weightedAveragePredict(expenses);
+
+                // 仅在输入年份时进行预测
+                if (timePeriod.matches("\\d{4}")) {
+                    reportGenerator.weightedAveragePredict(expenses);
+                }
 
             } catch (IOException e) {
                 System.out.println("An error occurred while reading the file.");
