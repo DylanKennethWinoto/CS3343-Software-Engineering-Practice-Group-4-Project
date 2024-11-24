@@ -19,7 +19,7 @@ public class mainFunction {
             FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
             // show the file information if the user file is in correct type.
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {//check if the file is in the correct format
-                System.out.println("Input successful.");
+                System.out.println("Address input successful.");
             	String timePeriod = null;
             	do { 
             		FinancialReportGenerator.showinput();
