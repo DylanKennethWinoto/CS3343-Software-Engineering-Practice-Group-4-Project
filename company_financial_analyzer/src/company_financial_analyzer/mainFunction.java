@@ -10,44 +10,43 @@ import java.util.Scanner;
 public class mainFunction {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String userInput;
+        String userInput = null;
 
         do {
             System.out.println("Please enter the path to your report.txt file:");
             String filePath = scanner.nextLine();
 
             FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
-
-            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-                System.out.println("Input successful, please select your time period:");
-                System.out.println("MM/YYYY (e.g., Jan/2024)");
-                System.out.println("Q1/YYYY (e.g., Q1/2024)");
-                System.out.println("YYYY (e.g., 2024)");
-                System.out.println("MM/YYYY-MM/YYYY (e.g., Jan/2024-Mar/2024)");
-                String timePeriod = scanner.nextLine();
-
-                reportGenerator.setTargetDates(timePeriod);
+            // show the file information if the user file is in correct type.
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {//check if the file is in the correct format
+      
+            	String timePeriod = null;
+            	do { 
+            		FinancialReportGenerator.showinput();
+                    timePeriod = scanner.nextLine();
+            } while (!reportGenerator.setTargetDates(timePeriod));
+  
 
                 String line;
                 List<Long> expenses = new ArrayList<>();
 
-                // 读取文件并添加条目
-                while ((line = br.readLine()) != null) {
+               
+                while ((line = br.readLine()) != null) {//br read line is to get the information line by line. Check if all content is readed 
                     String[] parts = line.split("\\|");
-                    System.out.println("Read line: " + line); // 调试输出
+                    System.out.println("Read line: " + line); // 调试输出? for user check
 
                     // 检查条目格式
-                    if (parts.length != 4) {
+                    if (parts.length != 4) {//check if the content of one line have 4 item
                         System.err.println("Invalid line format: " + line);
                         continue;
                     }
 
                     String date = parts[0];
-                    // 仅在日期匹配目标年份时添加支出
+                    // if time matched, then add the expenses to the list
                     if (reportGenerator.isDateInTarget(date)) {
                         reportGenerator.addEntry(line);
                         if (!parts[1].startsWith("Product")) {
-                            expenses.add(Long.parseLong(parts[3].trim()));
+                            expenses.add(Long.parseLong(parts[3].trim()));//.trim is for deleting the space before and after the string
                         }
                     }
                 }
@@ -55,7 +54,7 @@ public class mainFunction {
                 reportGenerator.generateReport(timePeriod);
 
                 // 仅在输入年份时进行预测
-                if (timePeriod.matches("\\d{4}")) {
+                if (timePeriod.matches("\\d{4}")) {//if user only input the year then do the prediction
                     reportGenerator.weightedAveragePredict(expenses);
                 }
 
