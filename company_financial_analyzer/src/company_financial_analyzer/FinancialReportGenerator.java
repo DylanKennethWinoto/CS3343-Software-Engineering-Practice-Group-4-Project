@@ -23,10 +23,10 @@ public class FinancialReportGenerator {
 		} else if (timePeriod.matches("(Q[1-4])/\\d{4}")) {//such Q1/2024 
 			addMonthsForQuarter(timePeriod);
 			return true;
-		} else if (timePeriod.matches("\\w{3}/\\d{4}")) {//such Jan/2024
+		} else if (timePeriod.matches("\\w{3}/\\d{4}")&& check_month(timePeriod)) {//such Jan /2024
 			targetDates.add(timePeriod);
 			return true;
-		} else if (timePeriod.matches("\\w{3}/\\d{4}-\\w{3}/\\d{4}")) {//such Jan/2024-Mar/2024
+		} else if (timePeriod.matches("\\w{3}/\\d{4}-\\w{3}/\\d{4}")) {//such Jan /2024-Mar/2024
 			addMonthsForRange(timePeriod);
 			return true;
 		} else {
@@ -49,7 +49,14 @@ public class FinancialReportGenerator {
 			targetDates.add(String.format("%s/%d", monthToText(month), year));
 		}
 	}
-
+	private boolean check_month(String timePeriod) {
+		for (int i = 0; i < months.length; i++) {
+            if (timePeriod. substring(0,2).equals(months[i])) {
+                return true;
+            }
+		}    
+        return false;
+	}
 	private void addMonthsForRange(String timePeriod) {//for case Jan/2024-Mar/2024
 		String[] parts = timePeriod.split("-");
 		String[] startParts = parts[0].split("/");
@@ -240,6 +247,7 @@ public class FinancialReportGenerator {
 		}
 	}
 	public static void showinput () {
+		System.out.println("Input successful.");
         System.out.println("MM/YYYY (e.g., Jan/2024)");
         System.out.println("Q1/YYYY (e.g., Q1/2024)");
         System.out.println("YYYY (e.g., 2024)");
