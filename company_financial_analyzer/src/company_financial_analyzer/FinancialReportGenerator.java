@@ -240,7 +240,6 @@ public class FinancialReportGenerator {
 		}
 	}
 	public static void showinput () {
-	
         System.out.println("MM/YYYY (e.g., Jan/2024)");
         System.out.println("Q1/YYYY (e.g., Q1/2024)");
         System.out.println("YYYY (e.g., 2024)");
