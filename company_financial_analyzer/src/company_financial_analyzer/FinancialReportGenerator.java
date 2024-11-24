@@ -51,7 +51,7 @@ public class FinancialReportGenerator {
 	}
 	private boolean check_month(String timePeriod) {
 		for (int i = 0; i < months.length; i++) {
-            if (timePeriod. substring(0,2).equals(months[i])) {
+            if (timePeriod. substring(0,3).equals(months[i])) {
                 return true;
             }
 		}    
