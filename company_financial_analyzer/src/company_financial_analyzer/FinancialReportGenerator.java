@@ -14,41 +14,120 @@ public class FinancialReportGenerator {
 
 	private final String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
 			"Dec" };
+	
+	private TimePeriodStrategy timePeriodStrategy;
+
+	public interface TimePeriodStrategy {
+	    List<String> getTargetDates(String timePeriod);
+	}
+	
+	public class YearStrategy implements TimePeriodStrategy {
+	    @Override
+	    public List<String> getTargetDates(String timePeriod) {
+	        List<String> targetDates = new ArrayList<>();
+	        int year = Integer.parseInt(timePeriod);
+	        for (int month = 1; month <= 12; month++) {
+	            targetDates.add(String.format("%s/%d", monthToText(month), year));
+	        }
+	        return targetDates;
+	    }
+
+	    private String monthToText(int month) {
+	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	        return (month >= 1 && month <= 12) ? months[month - 1] : null;
+	    }
+	}
+	
+	public class QuarterStrategy implements TimePeriodStrategy {
+	    @Override
+	    public List<String> getTargetDates(String timePeriod) {
+	        List<String> targetDates = new ArrayList<>();
+	        String[] parts = timePeriod.split("/");
+	        int startMonth = (Integer.parseInt(parts[0].substring(1)) - 1) * 3 + 1;
+	        int year = Integer.parseInt(parts[1]);
+	        for (int month = startMonth; month < startMonth + 3; month++) {
+	            targetDates.add(String.format("%s/%d", monthToText(month), year));
+	        }
+	        return targetDates;
+	    }
+
+	    private String monthToText(int month) {
+	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	        return (month >= 1 && month <= 12) ? months[month - 1] : null;
+	    }
+	}
+	
+	public class MonthStrategy implements TimePeriodStrategy {
+	    @Override
+	    public List<String> getTargetDates(String timePeriod) {
+	        List<String> targetDates = new ArrayList<>();
+	        targetDates.add(timePeriod);
+	        return targetDates;
+	    }
+	}
+	
+	public class RangeStrategy implements TimePeriodStrategy {
+	    @Override
+	    public List<String> getTargetDates(String timePeriod) {
+	        List<String> targetDates = new ArrayList<>();
+	        String[] parts = timePeriod.split("-");
+	        String[] startParts = parts[0].split("/");
+	        String[] endParts = parts[1].split("/");
+
+	        int startMonth = textToMonth(startParts[0]);
+	        int endMonth = textToMonth(endParts[0]);
+	        int startYear = Integer.parseInt(startParts[1]);
+	        int endYear = Integer.parseInt(endParts[1]);
+
+	        for (int year = startYear; year <= endYear; year++) {
+	            int monthStart = (year == startYear) ? startMonth : 1;
+	            int monthEnd = (year == endYear) ? endMonth : 12;
+	            for (int month = monthStart; month <= monthEnd; month++) {
+	                targetDates.add(String.format("%s/%d", monthToText(month), year));
+	            }
+	        }
+	        return targetDates;
+	    }
+
+	    private String monthToText(int month) {
+	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	        return (month >= 1 && month <= 12) ? months[month - 1] : null;
+	    }
+
+	    private int textToMonth(String month) {
+	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	        for (int i = 0; i < months.length; i++) {
+	            if (months[i].equalsIgnoreCase(month)) {
+	                return i + 1;
+	            }
+	        }
+	        throw new IllegalArgumentException("Invalid month: " + month);
+	    }
+	}
+	
 
 	public boolean setTargetDates(String timePeriod) {//time period is the target time that want to check
 		targetDates.clear();
 		if (timePeriod.matches("\\d{4}")) {//such 2024
-			addMonthsForYear(Integer.parseInt(timePeriod));
-			return true;
+			timePeriodStrategy = new YearStrategy();
 		} else if (timePeriod.matches("(Q[1-4])/\\d{4}")) {//such Q1/2024 
-			addMonthsForQuarter(timePeriod);
-			return true;
+			timePeriodStrategy = new QuarterStrategy();
 		} else if (timePeriod.matches("\\w{3}/\\d{4}")&& check_month(timePeriod)) {//such Jan /2024
-			targetDates.add(timePeriod);
-			return true;
+			timePeriodStrategy = new MonthStrategy();
 		} else if (timePeriod.matches("\\w{3}/\\d{4}-\\w{3}/\\d{4}")) {//such Jan /2024-Mar/2024
-			addMonthsForRange(timePeriod);
-			return true;
+			timePeriodStrategy = new RangeStrategy();
 		} else {
 			System.out.println("Invalid time period format.please retry to select time period.");
 			return false;//report error
 		}
+		targetDates.addAll(timePeriodStrategy.getTargetDates(timePeriod));
+        return true;
+	}
+	
+	public List<String> getTargetDates() {
+	    return new ArrayList<>(targetDates); // 返回一个副本，以防外部修改
 	}
 
-	private void addMonthsForYear(int year) {//for case 2024
-		for (int month = 1; month <= 12; month++) {
-			targetDates.add(String.format("%s/%d", monthToText(month), year));
-		}
-	}
-
-	private void addMonthsForQuarter(String timePeriod) {//for case Q1/2024
-		String[] parts = timePeriod.split("/");
-		int startMonth = (Integer.parseInt(parts[0].substring(1)) - 1) * 3 + 1;
-		int year = Integer.parseInt(parts[1]);
-		for (int month = startMonth; month < startMonth + 3; month++) {
-			targetDates.add(String.format("%s/%d", monthToText(month), year));
-		}
-	}
 	private boolean check_month(String timePeriod) {
 		for (int i = 0; i < months.length; i++) {
             if (timePeriod. substring(0,3).equals(months[i])) {
@@ -56,28 +135,6 @@ public class FinancialReportGenerator {
             }
 		}    
         return false;
-	}
-	private void addMonthsForRange(String timePeriod) {//for case Jan/2024-Mar/2024
-		String[] parts = timePeriod.split("-");
-		String[] startParts = parts[0].split("/");
-		String[] endParts = parts[1].split("/");
-
-		int startMonth = textToMonth(startParts[0]);
-		int endMonth = textToMonth(endParts[0]);
-		int startYear = Integer.parseInt(startParts[1]);
-		int endYear = Integer.parseInt(endParts[1]);
-
-		for (int year = startYear; year <= endYear; year++) {
-			int monthStart = (year == startYear) ? startMonth : 1;
-			int monthEnd = (year == endYear) ? endMonth : 12;
-			for (int month = monthStart; month <= monthEnd; month++) {
-				targetDates.add(String.format("%s/%d", monthToText(month), year));
-			}
-		}
-	}
-
-	private String monthToText(int month) {//convert the number to text
-		return (month >= 1 && month <= 12) ? months[month - 1] : null;
 	}
 
 	private int textToMonth(String month) {
