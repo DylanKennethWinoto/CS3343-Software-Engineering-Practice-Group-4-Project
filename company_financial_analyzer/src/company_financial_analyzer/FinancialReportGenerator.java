@@ -15,28 +15,33 @@ public class FinancialReportGenerator {
 	private final String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
 			"Dec" };
 
-	public void setTargetDates(String timePeriod) {
+	public boolean setTargetDates(String timePeriod) {//time period is the target time that want to check
 		targetDates.clear();
-		if (timePeriod.matches("\\d{4}")) {
+		if (timePeriod.matches("\\d{4}")) {//such 2024
 			addMonthsForYear(Integer.parseInt(timePeriod));
-		} else if (timePeriod.matches("(Q[1-4])/\\d{4}")) {
+			return true;
+		} else if (timePeriod.matches("(Q[1-4])/\\d{4}")) {//such Q1/2024 
 			addMonthsForQuarter(timePeriod);
-		} else if (timePeriod.matches("\\w{3}/\\d{4}")) {
+			return true;
+		} else if (timePeriod.matches("\\w{3}/\\d{4}")) {//such Jan/2024
 			targetDates.add(timePeriod);
-		} else if (timePeriod.matches("\\w{3}/\\d{4}-\\w{3}/\\d{4}")) {
+			return true;
+		} else if (timePeriod.matches("\\w{3}/\\d{4}-\\w{3}/\\d{4}")) {//such Jan/2024-Mar/2024
 			addMonthsForRange(timePeriod);
+			return true;
 		} else {
-			throw new IllegalArgumentException("Invalid time period format.");
+			System.out.println("Invalid time period format.please retry to select time period.");
+			return false;//report error
 		}
 	}
 
-	private void addMonthsForYear(int year) {
+	private void addMonthsForYear(int year) {//for case 2024
 		for (int month = 1; month <= 12; month++) {
 			targetDates.add(String.format("%s/%d", monthToText(month), year));
 		}
 	}
 
-	private void addMonthsForQuarter(String timePeriod) {
+	private void addMonthsForQuarter(String timePeriod) {//for case Q1/2024
 		String[] parts = timePeriod.split("/");
 		int startMonth = (Integer.parseInt(parts[0].substring(1)) - 1) * 3 + 1;
 		int year = Integer.parseInt(parts[1]);
@@ -45,7 +50,7 @@ public class FinancialReportGenerator {
 		}
 	}
 
-	private void addMonthsForRange(String timePeriod) {
+	private void addMonthsForRange(String timePeriod) {//for case Jan/2024-Mar/2024
 		String[] parts = timePeriod.split("-");
 		String[] startParts = parts[0].split("/");
 		String[] endParts = parts[1].split("/");
@@ -64,7 +69,7 @@ public class FinancialReportGenerator {
 		}
 	}
 
-	private String monthToText(int month) {
+	private String monthToText(int month) {//convert the number to text
 		return (month >= 1 && month <= 12) ? months[month - 1] : null;
 	}
 
@@ -233,6 +238,14 @@ public class FinancialReportGenerator {
 			}
 			reportBuilder.append("\n");
 		}
+	}
+	public static void showinput () {
+	System.out.println("Input successful.");
+        System.out.println("MM/YYYY (e.g., Jan/2024)");
+        System.out.println("Q1/YYYY (e.g., Q1/2024)");
+        System.out.println("YYYY (e.g., 2024)");
+        System.out.println("MM/YYYY-MM/YYYY (e.g., Jan/2024-Mar/2024)");
+        System.out.println("please select your time period:");
 	}
 
 	private void generateProductReport(StringBuilder reportBuilder) {
