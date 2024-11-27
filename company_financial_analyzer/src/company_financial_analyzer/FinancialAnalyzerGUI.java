@@ -94,6 +94,18 @@ public class FinancialAnalyzerGUI extends JFrame {
         JButton browseButton = createStyledButton("Browse");
         browseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
+            // Add TXT file filter
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Text Files (*.txt)";
+                }
+            });
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 filePathField.setText(fileChooser.getSelectedFile().getAbsolutePath());
@@ -165,6 +177,18 @@ public class FinancialAnalyzerGUI extends JFrame {
             return;
         }
 
+        // Validate file extension
+        if (!filePath.toLowerCase().endsWith(".txt")) {
+            showError("Please select a valid .txt file");
+            return;
+        }
+
+        File file = new File(filePath);
+        if (!file.exists() || !file.isFile()) {
+            showError("Selected file does not exist");
+            return;
+        }
+
         try {
             processReport(filePath, timePeriod);
         } catch (IOException e) {
@@ -224,13 +248,11 @@ public class FinancialAnalyzerGUI extends JFrame {
         content.setBackground(Color.WHITE);
         content.setBorder(BorderFactory.createLineBorder(THEME_COLOR, 2));
 
-        // Add logo/title
         JLabel title = new JLabel("Financial Analyzer", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 24));
         title.setForeground(THEME_COLOR);
         content.add(title, BorderLayout.CENTER);
 
-        // Add progress bar
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         progressBar.setForeground(THEME_COLOR);
@@ -258,7 +280,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create input panel
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JTextField usernameField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
@@ -268,7 +289,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         inputPanel.add(new JLabel("Password:"));
         inputPanel.add(passwordField);
 
-        // Create button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         JButton loginButton = new JButton("Login");
         JButton signUpButton = new JButton("Sign Up");
@@ -281,7 +301,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         buttonPanel.add(loginButton);
         buttonPanel.add(signUpButton);
 
-        // Add action listeners
         loginButton.addActionListener(e -> handleLogin(dialog, usernameField.getText(),
                 new String(passwordField.getPassword())));
         signUpButton.addActionListener(e -> {
@@ -317,7 +336,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create input panel
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JTextField newUsernameField = new JTextField();
         JPasswordField newPasswordField = new JPasswordField();
@@ -327,7 +345,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         inputPanel.add(new JLabel("New Password:"));
         inputPanel.add(newPasswordField);
 
-        // Create button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton signUpButton = new JButton("Create Account");
         JButton cancelButton = new JButton("Cancel");
@@ -340,7 +357,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         buttonPanel.add(signUpButton);
         buttonPanel.add(cancelButton);
 
-        // Add action listeners
         signUpButton.addActionListener(e -> handleSignUp(dialog, 
             newUsernameField.getText(), new String(newPasswordField.getPassword())));
         cancelButton.addActionListener(e -> {
@@ -418,7 +434,6 @@ public class FinancialAnalyzerGUI extends JFrame {
             }
         }
         
-        // Add default admin user if no users exist
         if (users.isEmpty()) {
             users.add(new User("admin", "admin123"));
         }
@@ -426,7 +441,6 @@ public class FinancialAnalyzerGUI extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // Set system look and feel
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
@@ -441,15 +455,12 @@ public class FinancialAnalyzerGUI extends JFrame {
             }
         }
 
-        // Load users data
         loadUsers();
 
-        // Add shutdown hook to save users
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveUsers();
         }));
 
-        // Launch application
         SwingUtilities.invokeLater(() -> {
             try {
                 showSplashScreen();
