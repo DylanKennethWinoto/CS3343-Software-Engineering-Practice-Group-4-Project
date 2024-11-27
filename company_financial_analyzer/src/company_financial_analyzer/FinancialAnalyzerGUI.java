@@ -9,6 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
+class FinancialReportGenerator {
+    private List<String> entries = new ArrayList<>();
+    private String startDate;
+    private String endDate;
+
+    public boolean setTargetDates(String timePeriod) {
+        // Example implementation - you can enhance this based on your needs
+        return true;
+    }
+
+    public boolean isDateInTarget(String date) {
+        // Example implementation - you can enhance this based on your needs
+        return true;
+    }
+
+    public void addEntry(String entry) {
+        entries.add(entry);
+    }
+
+    public String generateReport(String timePeriod) {
+        // Example implementation - you can enhance this based on your needs
+        StringBuilder report = new StringBuilder();
+        report.append("Financial Report for ").append(timePeriod).append("\n\n");
+        
+        for (String entry : entries) {
+            report.append(entry).append("\n");
+        }
+        
+        return report.toString();
+    }
+
+    public void weightedAveragePredict(List<Long> expenses) {
+        // Example implementation - you can enhance this based on your needs
+    }
+}
+
 public class FinancialAnalyzerGUI extends JFrame {
     private static List<User> users = new ArrayList<>();
     private JTextField filePathField;
@@ -44,7 +80,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
-        // Add main components
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         
@@ -57,18 +92,15 @@ public class FinancialAnalyzerGUI extends JFrame {
         mainPanel.add(timePeriodPanel);
         mainPanel.add(Box.createVerticalStrut(10));
 
-        // Create control panel
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         analyzeButton = createStyledButton("Generate Report");
         analyzeButton.addActionListener(e -> generateReport());
         controlPanel.add(analyzeButton);
 
-        // Add all components to frame
         add(mainPanel, BorderLayout.NORTH);
         add(new JScrollPane(resultArea), BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
 
-        // Set frame properties
         pack();
         setSize(900, 700);
         setLocationRelativeTo(null);
@@ -94,7 +126,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         JButton browseButton = createStyledButton("Browse");
         browseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            // Add TXT file filter
             fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
                 @Override
                 public boolean accept(File f) {
@@ -107,8 +138,53 @@ public class FinancialAnalyzerGUI extends JFrame {
                 }
             });
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                filePathField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                File selectedFile = fileChooser.getSelectedFile();
+                if (!selectedFile.getName().toLowerCase().endsWith(".txt")) {
+                    showError("Please select a valid .txt file");
+                    filePathField.setText("");
+                    return;
+                }
+                if (!selectedFile.exists() || !selectedFile.isFile()) {
+                    showError("Selected file does not exist");
+                    filePathField.setText("");
+                    return;
+                }
+                filePathField.setText(selectedFile.getAbsolutePath());
+            }
+        });
+
+        filePathField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void validateFile() {
+                String filePath = filePathField.getText().trim();
+                if (!filePath.isEmpty()) {
+                    if (!filePath.toLowerCase().endsWith(".txt")) {
+                        showError("Please select a valid .txt file");
+                        filePathField.setText("");
+                        return;
+                    }
+                    File file = new File(filePath);
+                    if (!file.exists() || !file.isFile()) {
+                        showError("Selected file does not exist");
+                        filePathField.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                validateFile();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                // No validation needed when removing text
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                validateFile();
             }
         });
 
@@ -174,18 +250,6 @@ public class FinancialAnalyzerGUI extends JFrame {
 
         if (filePath.isEmpty() || timePeriod.isEmpty()) {
             showError("Please select a file and enter a time period");
-            return;
-        }
-
-        // Validate file extension
-        if (!filePath.toLowerCase().endsWith(".txt")) {
-            showError("Please select a valid .txt file");
-            return;
-        }
-
-        File file = new File(filePath);
-        if (!file.exists() || !file.isFile()) {
-            showError("Selected file does not exist");
             return;
         }
 
