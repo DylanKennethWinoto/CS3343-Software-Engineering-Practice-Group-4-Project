@@ -125,7 +125,7 @@ public class FinancialReportGenerator {
 	}
 	
 	public List<String> getTargetDates() {
-	    return new ArrayList<>(targetDates); // 返回一个副本，以防外部修改
+	    return new ArrayList<>(targetDates);
 	}
 
 	private boolean check_month(String timePeriod) {
@@ -162,7 +162,7 @@ public class FinancialReportGenerator {
 		String category = parts[2];
 		long amount = parseAmount(parts[3]);
 
-		// 处理日期和金额
+		
 		if (isDateInTarget(date)) {
 			processEntry(name, category, amount);
 			if (!name.startsWith("Product")) {
@@ -222,8 +222,8 @@ public class FinancialReportGenerator {
 		if (parts.length != 3) {
 			throw new IllegalArgumentException("Invalid date format: " + date);
 		}
-		String monthText = parts[1]; // 获取文本月份部分
-		return textToMonth(monthText); // 转换为数字（1-12）
+		String monthText = parts[1];
+		return textToMonth(monthText); 
 	}
 	
 	public void test_calculateWeightedAverage(List<Long> expenses) {
@@ -235,30 +235,29 @@ public class FinancialReportGenerator {
 			throw new IllegalArgumentException("No expenses to calculate average.");
 		}
 
-		// 获取所有不同的月份
+		
 		Set<Integer> uniqueMonths = new HashSet<>();
 		for (String date : expenseDates) {
 			uniqueMonths.add(getMonthFromExpenseDate(date));
 		}
 
-		// 将月份转换为列表并排序
+	
 		List<Integer> sortedMonths = new ArrayList<>(uniqueMonths);
 		Collections.sort(sortedMonths);
 
-		// 创建月份到权重的映射，较晚的月份权重更高
 		Map<Integer, Integer> monthWeights = new HashMap<>();
 		for (int i = 0; i < sortedMonths.size(); i++) {
-			monthWeights.put(sortedMonths.get(i), i + 1); // 较晚的月份权重更高
+			monthWeights.put(sortedMonths.get(i), i + 1); 
 		}
 
 		double weightedSum = 0;
 		int totalWeight = 0;
 
-		// 计算加权和
+		
 		for (int i = 0; i < expenses.size(); i++) {
 			String date = expenseDates.get(i);
 			int month = getMonthFromExpenseDate(date);
-			int weight = monthWeights.get(month); // 获取该月份的权重
+			int weight = monthWeights.get(month); 
 
 			weightedSum += expenses.get(i) * weight;
 			totalWeight += weight;
