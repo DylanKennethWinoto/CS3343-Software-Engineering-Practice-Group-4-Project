@@ -1,3 +1,0 @@
-01/Jan/2024|Product A|Online Advertisement|1000
-01/Feb/2024|Sales Department|Sales|2000
-01/Mar/2024|HR Department|Salary|1500
