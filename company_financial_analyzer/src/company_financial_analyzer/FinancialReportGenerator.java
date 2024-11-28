@@ -34,7 +34,7 @@ public class FinancialReportGenerator {
 
 	    private String monthToText(int month) {
 	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-	        return (month >= 1 && month <= 12) ? months[month - 1] : null;
+	        return months[month - 1];
 	    }
 	}
 	
@@ -53,7 +53,7 @@ public class FinancialReportGenerator {
 
 	    private String monthToText(int month) {
 	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-	        return (month >= 1 && month <= 12) ? months[month - 1] : null;
+	        return months[month - 1];
 	    }
 	}
 	
@@ -91,7 +91,7 @@ public class FinancialReportGenerator {
 
 	    private String monthToText(int month) {
 	        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-	        return (month >= 1 && month <= 12) ? months[month - 1] : null;
+	        return months[month - 1];
 	    }
 
 	    private int textToMonth(String month) {
@@ -135,6 +135,10 @@ public class FinancialReportGenerator {
             }
 		}    
         return false;
+	}
+	
+	public void test_textToMonth(String month) {
+		textToMonth(month);
 	}
 
 	private int textToMonth(String month) {
@@ -208,6 +212,10 @@ public class FinancialReportGenerator {
 		double prediction = calculateWeightedAverage(expenses);
 		System.out.printf("Predicted future expense for the year: %.2f\n", prediction * 12);
 	}
+	
+	public void test_getMonthFromExpenseDate(String date) {
+		getMonthFromExpenseDate(date);
+	}
 
 	private int getMonthFromExpenseDate(String date) {
 		String[] parts = date.split("/");
@@ -216,6 +224,10 @@ public class FinancialReportGenerator {
 		}
 		String monthText = parts[1]; // 获取文本月份部分
 		return textToMonth(monthText); // 转换为数字（1-12）
+	}
+	
+	public void test_calculateWeightedAverage(List<Long> expenses) {
+		calculateWeightedAverage(expenses);
 	}
 
 	private double calculateWeightedAverage(List<Long> expenses) {
@@ -303,6 +315,7 @@ public class FinancialReportGenerator {
 			reportBuilder.append("\n");
 		}
 	}
+	
 	public static void showinput () {
         System.out.println("MM/YYYY (e.g., Jan/2024)");
         System.out.println("Q1/YYYY (e.g., Q1/2024)");

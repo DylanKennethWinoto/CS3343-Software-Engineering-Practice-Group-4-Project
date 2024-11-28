@@ -35,7 +35,7 @@ public class Department {
     }
 
     private int extractYearFromDate(String date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy", Locale.ENGLISH);
         try {
             Date parsedDate = dateFormat.parse(date);
             Calendar calendar = Calendar.getInstance();

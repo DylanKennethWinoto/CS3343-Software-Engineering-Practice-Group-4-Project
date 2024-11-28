@@ -12,6 +12,11 @@ public class FinancialReportFacade {
     public FinancialReportFacade() {
         this.reportGenerator = new FinancialReportGenerator();
     }
+    
+	public FinancialReportGenerator getReportGenerator() {
+		// TODO Auto-generated method stub
+		return reportGenerator;
+	}
 
     public boolean setTargetDates(String timePeriod) {
         return reportGenerator.setTargetDates(timePeriod);
@@ -39,7 +44,7 @@ public class FinancialReportFacade {
             }
 
             reportGenerator.generateReport(timePeriod);
-            if (reportGenerator.getTargetDates().size() == 1 && reportGenerator.getTargetDates().get(0).matches("\\d{4}")) {
+            if (reportGenerator.getTargetDates().size() == 12) {
                 reportGenerator.weightedAveragePredict(expenses);
             }
         }

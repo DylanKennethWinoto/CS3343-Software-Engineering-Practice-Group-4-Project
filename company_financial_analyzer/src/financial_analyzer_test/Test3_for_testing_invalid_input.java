@@ -37,7 +37,7 @@ public class Test3_for_testing_invalid_input {
 	public void ExceptionTest3() throws IOException {
 	    FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
 	    try {
-	    	reportGenerator.setTargetDates("20024");
+	    	reportGenerator.setTargetDates("0000");
 	    } catch (IllegalArgumentException e) {
 		    String expectedReport = "Invalid time period format.";
 		    assertEquals(expectedReport, e.getMessage());
@@ -51,6 +51,28 @@ public class Test3_for_testing_invalid_input {
 	    	reportGenerator.setTargetDates("Q5/2024");
 	    } catch (IllegalArgumentException e) {
 		    String expectedReport = "Invalid time period format.";
+		    assertEquals(expectedReport, e.getMessage());
+	    }
+	}
+	
+	@Test()
+	public void ExceptionTest5() throws IOException {
+	    FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
+	    try {
+	    	reportGenerator.setTargetDates("XXX/2024");
+	    } catch (IllegalArgumentException e) {
+		    String expectedReport = "Invalid month: XXX";
+		    assertEquals(expectedReport, e.getMessage());
+	    }
+	}
+	
+	@Test()
+	public void ExceptionTest6() throws IOException {
+	    FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
+	    try {
+	    	reportGenerator.setTargetDates("XXX/2024-XXX/2024");
+	    } catch (IllegalArgumentException e) {
+		    String expectedReport = "Invalid month: XXX";
 		    assertEquals(expectedReport, e.getMessage());
 	    }
 	}

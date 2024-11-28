@@ -165,4 +165,43 @@ public class Test2_normal_test {
 	            + "\n";
 	    assertEquals(expectedReport, report);
 	}
+	
+	@Test
+	public void testGenerateReportForPeriod2() throws IOException {
+	    FinancialReportGenerator reportGenerator = new FinancialReportGenerator();
+	    reportGenerator.setTargetDates("Jan/2022-Jun/2024");
+	    
+	    String filePath = "src/data/data2.txt"; 
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                reportGenerator.addEntry(line); // 假设你有一个方法来处理每一行数据
+            }
+        }
+	    String report = reportGenerator.generateReport("Jan/2024-Jun/2024");
+	    String expectedReport = "Jan/2024-Jun/2024 Financial Report\n"
+	            + "\n"
+	            + "Marketing Department Total Expense = 3600000 (65.5%)\n"
+	            + "Marketing Department Top 3 Categories:\n"
+	            + "1. Online Advertisement - 3200000\n"
+	            + "2. Salary - 400000\n"
+	            + "3. N/A\n"
+	            + "\n"
+	            + "Technology Department Total Expense = 1200000 (21.8%)\n"
+	            + "Technology Department Top 3 Categories:\n"
+	            + "1. Website Maintenance - 700000\n"
+	            + "2. Server Upgrade - 500000\n"
+	            + "3. N/A\n"
+	            + "\n"
+	            + "Accounting Total Expense = 700000 (12.7%)\n"
+	            + "Accounting Top 3 Categories:\n"
+	            + "1. Consulting Fees - 400000\n"
+	            + "2. Office Supplies - 300000\n"
+	            + "3. N/A\n"
+	            + "\n"
+	            + "Product A Total Revenue = 25000000\n"
+	            + "Total profit = 19500000"
+	            + "\n";
+	    assertEquals(expectedReport, report);
+	}
 }
