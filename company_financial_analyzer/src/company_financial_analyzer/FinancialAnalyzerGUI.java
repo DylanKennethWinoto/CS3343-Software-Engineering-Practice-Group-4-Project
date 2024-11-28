@@ -9,6 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
+class FinancialReportGenerator {
+    private List<String> entries = new ArrayList<>();
+    private String startDate;
+    private String endDate;
+
+    public boolean setTargetDates(String timePeriod) {
+        // Example implementation - you can enhance this based on your needs
+        return true;
+    }
+
+    public boolean isDateInTarget(String date) {
+        // Example implementation - you can enhance this based on your needs
+        return true;
+    }
+
+    public void addEntry(String entry) {
+        entries.add(entry);
+    }
+
+    public String generateReport(String timePeriod) {
+        // Example implementation - you can enhance this based on your needs
+        StringBuilder report = new StringBuilder();
+        report.append("Financial Report for ").append(timePeriod).append("\n\n");
+        
+        for (String entry : entries) {
+            report.append(entry).append("\n");
+        }
+        
+        return report.toString();
+    }
+
+    public void weightedAveragePredict(List<Long> expenses) {
+        // Example implementation - you can enhance this based on your needs
+    }
+}
+
 public class FinancialAnalyzerGUI extends JFrame {
     private static List<User> users = new ArrayList<>();
     private JTextField filePathField;
@@ -44,7 +80,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
-        // Add main components
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         
@@ -57,18 +92,15 @@ public class FinancialAnalyzerGUI extends JFrame {
         mainPanel.add(timePeriodPanel);
         mainPanel.add(Box.createVerticalStrut(10));
 
-        // Create control panel
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         analyzeButton = createStyledButton("Generate Report");
         analyzeButton.addActionListener(e -> generateReport());
         controlPanel.add(analyzeButton);
 
-        // Add all components to frame
         add(mainPanel, BorderLayout.NORTH);
         add(new JScrollPane(resultArea), BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
 
-        // Set frame properties
         pack();
         setSize(900, 700);
         setLocationRelativeTo(null);
@@ -94,9 +126,65 @@ public class FinancialAnalyzerGUI extends JFrame {
         JButton browseButton = createStyledButton("Browse");
         browseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Text Files (*.txt)";
+                }
+            });
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                filePathField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                File selectedFile = fileChooser.getSelectedFile();
+                if (!selectedFile.getName().toLowerCase().endsWith(".txt")) {
+                    showError("Please select a valid .txt file");
+                    filePathField.setText("");
+                    return;
+                }
+                if (!selectedFile.exists() || !selectedFile.isFile()) {
+                    showError("Selected file does not exist");
+                    filePathField.setText("");
+                    return;
+                }
+                filePathField.setText(selectedFile.getAbsolutePath());
+            }
+        });
+
+        filePathField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void validateFile() {
+                String filePath = filePathField.getText().trim();
+                if (!filePath.isEmpty()) {
+                    if (!filePath.toLowerCase().endsWith(".txt")) {
+                        showError("Please select a valid .txt file");
+                        filePathField.setText("");
+                        return;
+                    }
+                    File file = new File(filePath);
+                    if (!file.exists() || !file.isFile()) {
+                        showError("Selected file does not exist");
+                        filePathField.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                validateFile();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                // No validation needed when removing text
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                validateFile();
             }
         });
 
@@ -224,13 +312,11 @@ public class FinancialAnalyzerGUI extends JFrame {
         content.setBackground(Color.WHITE);
         content.setBorder(BorderFactory.createLineBorder(THEME_COLOR, 2));
 
-        // Add logo/title
         JLabel title = new JLabel("Financial Analyzer", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 24));
         title.setForeground(THEME_COLOR);
         content.add(title, BorderLayout.CENTER);
 
-        // Add progress bar
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         progressBar.setForeground(THEME_COLOR);
@@ -258,7 +344,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create input panel
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JTextField usernameField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
@@ -268,7 +353,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         inputPanel.add(new JLabel("Password:"));
         inputPanel.add(passwordField);
 
-        // Create button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         JButton loginButton = new JButton("Login");
         JButton signUpButton = new JButton("Sign Up");
@@ -281,7 +365,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         buttonPanel.add(loginButton);
         buttonPanel.add(signUpButton);
 
-        // Add action listeners
         loginButton.addActionListener(e -> handleLogin(dialog, usernameField.getText(),
                 new String(passwordField.getPassword())));
         signUpButton.addActionListener(e -> {
@@ -317,7 +400,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create input panel
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JTextField newUsernameField = new JTextField();
         JPasswordField newPasswordField = new JPasswordField();
@@ -327,7 +409,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         inputPanel.add(new JLabel("New Password:"));
         inputPanel.add(newPasswordField);
 
-        // Create button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton signUpButton = new JButton("Create Account");
         JButton cancelButton = new JButton("Cancel");
@@ -340,7 +421,6 @@ public class FinancialAnalyzerGUI extends JFrame {
         buttonPanel.add(signUpButton);
         buttonPanel.add(cancelButton);
 
-        // Add action listeners
         signUpButton.addActionListener(e -> handleSignUp(dialog, 
             newUsernameField.getText(), new String(newPasswordField.getPassword())));
         cancelButton.addActionListener(e -> {
@@ -418,7 +498,6 @@ public class FinancialAnalyzerGUI extends JFrame {
             }
         }
         
-        // Add default admin user if no users exist
         if (users.isEmpty()) {
             users.add(new User("admin", "admin123"));
         }
@@ -426,7 +505,6 @@ public class FinancialAnalyzerGUI extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // Set system look and feel
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
@@ -441,15 +519,12 @@ public class FinancialAnalyzerGUI extends JFrame {
             }
         }
 
-        // Load users data
         loadUsers();
 
-        // Add shutdown hook to save users
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveUsers();
         }));
 
-        // Launch application
         SwingUtilities.invokeLater(() -> {
             try {
                 showSplashScreen();
