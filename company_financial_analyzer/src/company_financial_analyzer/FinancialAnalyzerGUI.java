@@ -9,42 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
-class FinancialReportGenerator {
-    private List<String> entries = new ArrayList<>();
-    private String startDate;
-    private String endDate;
-
-    public boolean setTargetDates(String timePeriod) {
-        // Example implementation - you can enhance this based on your needs
-        return true;
-    }
-
-    public boolean isDateInTarget(String date) {
-        // Example implementation - you can enhance this based on your needs
-        return true;
-    }
-
-    public void addEntry(String entry) {
-        entries.add(entry);
-    }
-
-    public String generateReport(String timePeriod) {
-        // Example implementation - you can enhance this based on your needs
-        StringBuilder report = new StringBuilder();
-        report.append("Financial Report for ").append(timePeriod).append("\n\n");
-        
-        for (String entry : entries) {
-            report.append(entry).append("\n");
-        }
-        
-        return report.toString();
-    }
-
-    public void weightedAveragePredict(List<Long> expenses) {
-        // Example implementation - you can enhance this based on your needs
-    }
-}
-
 public class FinancialAnalyzerGUI extends JFrame {
     private static List<User> users = new ArrayList<>();
     private JTextField filePathField;
