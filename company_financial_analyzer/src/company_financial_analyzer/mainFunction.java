@@ -18,7 +18,7 @@ public class mainFunction {
 
             FinancialReportFacade reportFacade = new FinancialReportFacade();
             String timePeriod;
-
+            
             do {
                 FinancialReportGenerator.showinput();
                 timePeriod = scanner.nextLine();
