@@ -68,7 +68,9 @@ Product X Total Revenue = 10000000
 Total profit = 4900000
 
 Calculating weighted average prediction...
+
 Predicted future expense for the year: 12240000.00
+
 Would you like to generate another financial report (Y/N)?
 Y
 Please enter the path to your report.txt file:
