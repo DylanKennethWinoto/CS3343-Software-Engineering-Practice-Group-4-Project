@@ -8,6 +8,9 @@ Program Installation:
 2. Double Click the file _____________
 
 Project Usage:
+1. Upon launching, the program will prompt for user login credentials.
+2. User Authentication. The application features a login system. Users must enter a valid username and password to access the financial analysis features.
+New users can sign up if they don’t already have an account.
 1. After opening the program, the message will send the following message: "Welcome to Company's Financial Analyzer, please input your text report: "
 
 Inputting the correct format:
