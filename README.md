@@ -5,7 +5,7 @@ This program is an application that can automatically track an entire company's 
 
 Program Installation:
 1. Install the latest Java SE Runtime Environment (http://www.oracle.com/technetwork/java/javase/downloads/index.html). (Ignore this step if you already have this installed)
-2. Double Click the file _____________
+2. Double Click the exe file.
 
 Project Usage:
 1. Upon launching, the program will prompt for user login credentials.
